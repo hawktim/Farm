@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FarmConsoleApp
+﻿namespace FarmConsoleApp
 {
     internal class Program
     {

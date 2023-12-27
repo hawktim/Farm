@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
+using System.CodeDom;
 
 namespace FarmConsoleApp
 {
@@ -61,12 +62,6 @@ namespace FarmConsoleApp
                         break;
 
                     case TypeAction.Add:
-                        Console.WriteLine($"{this.Caption} ({currentAction.Caption})");
-                        currentAction.Execute(new FEventArgs { Select = arg.Select, Code = code });
-                        currentAction = Actions.First(x => x.TypeAction == TypeAction.List);
-                        code = "";
-                        continue;
-
                     case TypeAction.Remove:
                         Console.WriteLine($"{this.Caption} ({currentAction.Caption})");
                         currentAction.Execute(new FEventArgs { Select = arg.Select, Code = code });
@@ -114,49 +109,24 @@ namespace FarmConsoleApp
             }
             while (true);
         }
-        protected virtual void Detail(EventArgs args)
-        {
-
-        }
-        protected virtual void Add(EventArgs args)
-        {
-            //Console.WriteLine("Введите наименование товара:");
-            //string caption = Console.ReadLine();
-            //Console.WriteLine("Сохранить(Y/n)?");
-            //var result = Console.ReadLine();
-            //if(result=="Y" || result =="")
-            //{
-            //    Console.WriteLine("Сохранили");
-            //    Console.ReadKey();
-            //}
-        }
-        protected virtual void Remove(EventArgs args)
-        {
-            //if (args is FEventArgs arg)
-            //    Console.WriteLine(arg.Code);
-            //Console.WriteLine("Remove");
-            //Console.ReadLine();
-        }
-        protected virtual void List(EventArgs args)
-        {
-            //if (args is FEventArgs arg)
-            //    Console.WriteLine(arg.Code);
-            //Console.WriteLine("List");
-        }
+        protected abstract void Detail(EventArgs args);
+        protected abstract void Add(EventArgs args);
+        protected abstract void Remove(EventArgs args);
+        protected abstract void List(EventArgs args);
         protected virtual void Select(EventArgs args) 
         {
             List(args);
-            //if (args is FEventArgs arg)
-            //    Console.WriteLine(arg.Code);
-            //Console.WriteLine("Select");
         }
         protected string GetValue(string caption, int lenght = 100)
         {
             string result;
+            var i = 0;
             do
             {
                 Console.WriteLine(caption);
                 result = Console.ReadLine();
+                i++;
+                if (i > 3) throw new ConsoleException($"Было произведено более 5 проверок {caption}");
             } while (string.IsNullOrEmpty(result) || result.Length > lenght);
 
             return result;
@@ -164,15 +134,17 @@ namespace FarmConsoleApp
 
         protected string GetSelectValue<T>(string caption) where T : BaseControler
         {
-            string result;
-            
+            string result = "";
+            var i = 0;
             do
             {
                 var controller = DefaultControler.GetController<T>();
                 var arg = controller.GetActions( new FEventArgs { TypeAction = TypeAction.Select });
+                
                 result = arg.Select;
-                //ToDo: Необходимо проводить проверку на существование такой записи
 
+                i++;
+                if (i > 3) throw new ConsoleException($"Было произведено более 5 проверок {caption}");
             } while (string.IsNullOrEmpty(result));
 
             return result;
@@ -189,7 +161,8 @@ namespace FarmConsoleApp
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.Add("@IdValue", SqlDbType.Int).Value = code;
                     var reader = command.ExecuteReader();
-                    return reader.Read();
+                    reader.Read();
+                    return reader.HasRows;
                 }
             }
             return false;

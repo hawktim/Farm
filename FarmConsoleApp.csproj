@@ -46,6 +46,7 @@
     <Compile Include="Controllers\AptekControler.cs" />
     <Compile Include="BaseAction.cs" />
     <Compile Include="Controllers\BaseControler.cs" />
+    <Compile Include="Controllers\ConsoleException.cs" />
     <Compile Include="Controllers\FEventArgs.cs" />
     <Compile Include="TypeAction.cs" />
     <Compile Include="Controllers\DefaultControler.cs" />

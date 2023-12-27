@@ -30,7 +30,17 @@ namespace FarmConsoleApp
         }
         public void Execute(EventArgs value)
         {
-            _func.Invoke(value);
+            try
+            { 
+                _func.Invoke(value); 
+            }
+            catch (ConsoleException ex)
+            {
+                Console.WriteLine("Прервана опреация добавления");
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+            }
+           
         }
     }
 

@@ -82,6 +82,7 @@ namespace FarmConsoleApp
 
         protected override void Add(EventArgs args)
         {
+            
             var idProduct = GetSelectValue<ProductControler>("Необходимо выбрать товар:");
 
             string idWarehouse = "0";
