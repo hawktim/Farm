@@ -30,8 +30,7 @@ namespace FarmConsoleApp
 
         protected override void Remove(EventArgs args)
         {
-            if (!(GetArgRemove<WarehouseControler>(args) is FEventArgs arg))
-                return;
+            var arg = GetArgRemove<WarehouseControler>(args);
 
             if (int.TryParse(arg.Select, out var code) && code > 0)
             {
